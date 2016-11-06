@@ -12,8 +12,11 @@ import java.awt.MenuItem;
 import java.awt.FileDialog;
 
 import java.awt.BorderLayout;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
@@ -51,6 +54,33 @@ class UI{
     rootFrame = new Frame("O-Editor");
     //Set size
     rootFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
+    //Set close action
+    rootFrame.addWindowListener(new WindowListener(){
+      @Override
+      public void windowDeactivated(WindowEvent e){}
+      
+      @Override
+      public void windowActivated(WindowEvent e){}
+      
+      @Override
+      public void windowDeiconified(WindowEvent e){}
+
+      @Override
+      public void windowIconified(WindowEvent e){}
+      
+      @Override
+      public void windowClosed(WindowEvent e){}
+
+      @Override
+      public void windowClosing(WindowEvent e){
+        rootFrame.dispose();
+      }
+      
+      @Override
+      public void windowOpened(WindowEvent e){}
+
+
+    });
 
     //Menu bar
     rootMenuBar = new MenuBar();
