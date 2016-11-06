@@ -84,10 +84,10 @@ class FileHandler extends Thread{
           BufferedWriter writer = new BufferedWriter(new FileWriter(subject));
           writer.write(buffer2);
           writer.newLine();
+          writer.close();
         }catch(IOException ioex){
           System.out.println("I/O exception while writing...");
         }
-        writer.close();
         break;
     }
   }
