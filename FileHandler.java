@@ -1,6 +1,5 @@
 package oeditor;
 
-
 import java.io.File;
 
 import java.io.BufferedReader;
@@ -17,6 +16,7 @@ class FileHandler extends Thread{
   static final short read = 0;
   
   static final short write = 1;
+
 
   private short taskforce;
 
@@ -69,6 +69,7 @@ class FileHandler extends Thread{
               buffer[i] = current;
               current = reader.readLine();
             }
+          reader.close();
           }
         }catch(FileNotFoundException notFound){
           buffer = new String[1];
@@ -86,6 +87,7 @@ class FileHandler extends Thread{
         }catch(IOException ioex){
           System.out.println("I/O exception while writing...");
         }
+        writer.close();
         break;
     }
   }
