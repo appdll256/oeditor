@@ -5,6 +5,11 @@ import java.net.URL;
 
 import java.io.File;
 
+import java.awt.Frame;
+import java.awt.MenuBar;
+import java.awt.Menu;
+import java.awt.MenuItem;
+import java.awt.FileDialog;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
@@ -24,13 +29,13 @@ class UI{
   private File[] openedFiles = new File[1];
   private JEditorPane[] editorPanes = new JEditorPane[1];
   
-  private JFrame rootFrame;
+  private Frame rootFrame;
   
-  private JMenuBar rootMenuBar;
+  private MenuBar rootMenuBar;
   
-  private JMenu fileMenu;
+  private Menu fileMenu;
   
-  private JMenu editMenu;
+  private Menu editMenu;
 
   private JTabbedPane tabbedPane;
   
@@ -43,17 +48,17 @@ class UI{
   
   private void initUI(){
     //RootWindow
-    rootFrame = new JFrame("O-Editor");
+    rootFrame = new Frame("O-Editor");
     //Set size
-    rootFrame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+    rootFrame.setExtendedState(Frame.MAXIMIZED_BOTH);
 
     //Menu bar
-    rootMenuBar = new JMenuBar();
+    rootMenuBar = new MenuBar();
     //"File"
-    fileMenu = new JMenu("File");
+    fileMenu = new Menu("File");
     
     //"Open"
-    JMenuItem openFile = new JMenuItem("Open");
+    MenuItem openFile = new MenuItem("Open");
     openFile.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent ae){
@@ -62,7 +67,7 @@ class UI{
     });
     
     //"Save"
-    JMenuItem saveFile = new JMenuItem("Save");
+    MenuItem saveFile = new MenuItem("Save");
     saveFile.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
@@ -72,15 +77,16 @@ class UI{
     });
     
     //"Save under..."
-    JMenuItem saveFileUnder = new JMenuItem("Save file under...");
+    MenuItem saveFileUnder = new MenuItem("Save file under...");
     saveFileUnder.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
         //Show FileChooser
-        JFileChooser chooser = new JFileChooser();
-        if (chooser.showSaveDialog(new JDialog()) == JFileChooser.APPROVE_OPTION) {
+        FileDialog chooser = new FileDialog(new Frame(), "Save file under...", FileDialog.SAVE);
+        chooser.setVisible(true);
+        File selectedFile = new File(chooser.getFile());
+        if (selectedFile != null) {
           int selected = tabbedPane.getSelectedIndex();
-          File selectedFile = chooser.getSelectedFile();
           fileHandler.writeFile(selectedFile, editorPanes[selected].getText());
           tabbedPane.setTitleAt(selected, selectedFile.getPath());
         }
@@ -88,18 +94,16 @@ class UI{
     });
     
     //"Print"
-    JMenuItem printFile = new JMenuItem("Print");
+    MenuItem printFile = new MenuItem("Print");
 
     //"Exit"
-    JMenuItem exit = new JMenuItem("Exit");
+    MenuItem exit = new MenuItem("Exit");
     exit.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
         System.exit(0);
       }
     });
-
-
 
 
 
@@ -114,16 +118,13 @@ class UI{
 
 
     //"Edit"
-    editMenu = new JMenu("Edit");
+    editMenu = new Menu("Edit");
 
     //"Undo"
-    JMenuItem undo = new JMenuItem("Undo");
+    MenuItem undo = new MenuItem("Undo");
 
     //"Redo"
-    JMenuItem redo = new JMenuItem("Redo");
-
-
-
+    MenuItem redo = new MenuItem("Redo");
 
 
 
@@ -135,13 +136,13 @@ class UI{
 
 
     //"Help"
-    JMenu helpMenu = new JMenu("Help");
+    Menu helpMenu = new Menu("Help");
 
     //"Manual"
-    JMenuItem manual = new JMenuItem("Manual");
+    MenuItem manual = new MenuItem("Manual");
 
     //"Updates"
-    JMenuItem checkForUpdate = new JMenu("Check for update");
+    MenuItem checkForUpdate = new Menu("Check for update");
 
 
 
@@ -170,7 +171,7 @@ class UI{
     
     
     //Adding to frame
-    rootFrame.setJMenuBar(rootMenuBar);
+    rootFrame.setMenuBar(rootMenuBar);
     
     
     //Set Layout
@@ -200,13 +201,12 @@ class UI{
   
   
   private void openFile(){
-    JFileChooser fileChooser = new JFileChooser();
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("Text-Files", ".txt", ".TXT"));
-    if (fileChooser.showOpenDialog(new JDialog()) == JFileChooser.APPROVE_OPTION) {
-      File selectedFile = fileChooser.getSelectedFile();
+    FileDialog chooser = new FileDialog(new Frame(), "Open file...", FileDialog.LOAD);
+    chooser.setVisible(true);
+    File selectedFile = new File(chooser.getFile());
+    if (selectedFile != null && selectedFile.exists()) {
       try{
-        tabbedPane.addTab(selectedFile.getPath(), editPane(selectedFile.toURI().toURL()));
+        tabbedPane.addTab(selectedFile.getPath(), editPaneWithScrollBars(selectedFile.toURI().toURL()));
       }catch(MalformedURLException exeption){
         JOptionPane.showMessageDialog(null, "Error!", "File could not be opened cause of a malformed URL. Please try again later.", JOptionPane.ERROR_MESSAGE);
       }
@@ -215,14 +215,23 @@ class UI{
       
     }
   }
+  
+  
+  private void saveFile(){
+    
+  }
 
 
-  private JEditorPane editPane(URL fileUrl){
+
+  private JScrollPane editPaneWithScrollBars(URL fileUrl){
     try{
       ArrayHelper.addEditorPaneToOther(editorPanes, new JEditorPane(fileUrl));
-      return editorPanes[editorPanes.length - 1];
+      //If no error occurred
+      return new JScrollPane(editorPanes[editorPanes.length - 1]);
     }catch(IOException ioex){
-      return new JEditorPane();
+      System.err.println("Could not open file!");
+      //Otherwise
+      return new JScrollPane(new JEditorPane());
     }
   }
 
