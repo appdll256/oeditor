@@ -13,12 +13,10 @@ public class MainClass{
   private static UI ui;
   
   public static void main(String[] args){
-    try{
-      assert init() == true;
-      ui();
-    }catch(Throwable throwable){
-      fileHandler.writeFile(new File("log.txt"), StackTraceHelper.convertStackToStrings(throwable.getStackTrace()));
-    }
+    boolean init_successful = init();
+    assert init_successful == true;
+    boolean ui_build_successful = ui();
+    assert ui_build_successful = true;
   }
   
   
@@ -28,9 +26,9 @@ public class MainClass{
   }
   
   //Move to UI
-  private static void ui(){
+  private static boolean ui(){
     UI ui = new UI();
-
+    return true;
   }
 
 

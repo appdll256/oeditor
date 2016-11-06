@@ -69,7 +69,7 @@ class FileHandler extends Thread{
               buffer[i] = current;
               current = reader.readLine();
             }
-          reader.close();
+            reader.close();
           }
         }catch(FileNotFoundException notFound){
           buffer = new String[1];
