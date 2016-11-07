@@ -74,6 +74,7 @@ class UI{
       @Override
       public void windowClosing(WindowEvent e){
         rootFrame.dispose();
+        System.exit(0);
       }
       
       @Override
