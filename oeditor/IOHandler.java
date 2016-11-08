@@ -11,7 +11,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
-class FileHandler extends Thread{
+class IOHandler extends Thread{
   
   static final short read = 0;
   

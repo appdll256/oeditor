@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 
 class UI{
-  private static FileHandler fileHandler;
+  private static IOHandler ioHandler;
   
   private File[] openedFiles = new File[1];
   private JEditorPane[] editorPanes = new JEditorPane[1];
@@ -43,7 +43,7 @@ class UI{
   private JTabbedPane tabbedPane;
   
   UI(){
-    fileHandler = new FileHandler();
+    ioHandler = new IOHandler();
     initUI();   
   }
 
@@ -102,7 +102,7 @@ class UI{
       @Override
       public void actionPerformed(ActionEvent e){
         int selected = tabbedPane.getSelectedIndex();
-        fileHandler.writeFile(new File(tabbedPane.getTitleAt(selected)), editorPanes[selected].getText());
+        ioHandler.writeFile(new File(tabbedPane.getTitleAt(selected)), editorPanes[selected].getText());
       }
     });
     
@@ -111,14 +111,15 @@ class UI{
     saveFileUnder.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
-        //Show FileChooser
+        //Show FileDialog
         FileDialog chooser = new FileDialog(new Frame(), "Save file under...", FileDialog.SAVE);
         chooser.setVisible(true);
-        File selectedFile = new File(chooser.getFile());
-        if (selectedFile != null) {
-          int selected = tabbedPane.getSelectedIndex();
-          fileHandler.writeFile(selectedFile, editorPanes[selected].getText());
-          tabbedPane.setTitleAt(selected, selectedFile.getPath());
+        String selected = chooser.getFile();
+        if (selected != null) {
+          File selectedFile = new File(selected);
+          int selectedIndex = tabbedPane.getSelectedIndex();
+          ioHandler.writeFile(selectedFile, editorPanes[selectedIndex].getText());
+          tabbedPane.setTitleAt(selectedIndex, selectedFile.getPath());
         }
       }
     });
@@ -233,8 +234,9 @@ class UI{
   private void openFile(){
     FileDialog chooser = new FileDialog(new Frame(), "Open file...", FileDialog.LOAD);
     chooser.setVisible(true);
-    File selectedFile = new File(chooser.getFile());
-    if (selectedFile != null && selectedFile.exists()) {
+    String selected = chooser.getFile();
+    if (selected != null) {
+      File selectedFile = new File(selected);
       try{
         tabbedPane.addTab(selectedFile.getPath(), editPaneWithScrollBars(selectedFile.toURI().toURL()));
       }catch(MalformedURLException exeption){
@@ -259,7 +261,8 @@ class UI{
       //If no error occurred
       return new JScrollPane(editorPanes[editorPanes.length - 1]);
     }catch(IOException ioex){
-      System.err.println("Could not open file!");
+      System.err.println("Could not open file: " + fileUrl.toString());
+      JOptionPane.showMessageDialog(null, "Error!", "File :" + fileUrl.toString() + " could not open, please see if you have the right premissions...", JOptionPane.ERROR_MESSAGE);
       //Otherwise
       return new JScrollPane(new JEditorPane());
     }

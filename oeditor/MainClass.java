@@ -8,7 +8,7 @@ public class MainClass{
   
   private static SettingHandler settingHandler;
 
-  private static FileHandler fileHandler;
+  private static IOHandler fioHandler;
 
   private static UI ui;
   
