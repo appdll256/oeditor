@@ -21,6 +21,7 @@ public class MainClass{
   
   
   private static boolean init(){
+    //Init SettingsHandler
     settingHandler = new SettingHandler();
     return true;
   }
