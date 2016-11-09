@@ -102,8 +102,7 @@ class UI{
     saveFile.addActionListener(new ActionListener(){
       @Override
       public void actionPerformed(ActionEvent e){
-        int selected = tabbedPane.getSelectedIndex();
-        ioHandler.writeFile(new File(tabbedPane.getTitleAt(selected)), editorPanes[selected].getText());
+        saveFile(false);
       }
     });
     
@@ -247,8 +246,22 @@ class UI{
   }
   
   
-  private void saveFile(){
-    
+  private void saveFile(boolean fileChooser){
+    if(fileChooser){
+      //Show FileDialog
+      FileDialog chooser = new FileDialog(new Frame(), "Save file under...", FileDialog.SAVE);
+      chooser.setVisible(true);
+      String selected = chooser.getFile();
+      if (selected != null) {
+        File selectedFile = new File(selected);
+        int selectedIndex = tabbedPane.getSelectedIndex();
+        ioHandler.writeFile(selectedFile, editorPanes[selectedIndex].getText());
+        tabbedPane.setTitleAt(selectedIndex, selectedFile.getPath());
+      }
+    }else{
+      int selected = tabbedPane.getSelectedIndex();
+      ioHandler.writeFile(new File(tabbedPane.getTitleAt(selected)), editorPanes[selected].getText());
+    }
   }
 
 
