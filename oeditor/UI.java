@@ -175,6 +175,8 @@ class UI{
     //"Updates"
     MenuItem checkForUpdate = new MenuItem("Check for update");
     
+    //"About"
+    MenuItem about = new MenuItem("About");
 
 
 
@@ -183,7 +185,7 @@ class UI{
     //Add menu items
     helpMenu.add(manual);
     helpMenu.add(checkForUpdate);
-
+    helpMenu.add(about);
 
 
 
