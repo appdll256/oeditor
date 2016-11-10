@@ -173,8 +173,8 @@ class UI{
     MenuItem manual = new MenuItem("Manual");
 
     //"Updates"
-    MenuItem checkForUpdate = new Menu("Check for update");
-
+    MenuItem checkForUpdate = new MenuItem("Check for update");
+    
 
 
 
