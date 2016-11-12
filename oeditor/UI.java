@@ -1,7 +1,6 @@
 package oeditor;
 
 
-import java.net.URL;
 
 import java.io.File;
 
@@ -25,7 +24,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import java.io.IOException;
 
-import java.net.MalformedURLException;
 
 class UI{
   private static IOHandler ioHandler;
@@ -239,11 +237,9 @@ class UI{
     String selected = chooser.getFile();
     if (selected != null) {
       File selectedFile = new File(selected);
-      try{
-        tabbedPane.addTab(selectedFile.getPath(), editPaneWithScrollBars(selectedFile.toURI().toURL()));
-      }catch(MalformedURLException exeption){
-        JOptionPane.showMessageDialog(null, "File could not be opened cause of a malformed URL. Please try again later.", "Error!", JOptionPane.ERROR_MESSAGE);
-      }
+      
+      tabbedPane.addTab(selectedFile.getPath(), editPaneWithScrollBars(IOHandler.readFileLinesWithSeperators(selectedFile)));
+      
     }
   }
   
@@ -268,19 +264,13 @@ class UI{
 
 
 
-  private ScrollPane editPaneWithScrollBars(URL fileUrl){
-    try{
-      ScrollPane scrollPane = new ScrollPane();
-      ArrayHelper.addEditorPaneToOther(editorPanes, new JEditorPane(fileUrl));
-      //If no error occurred
-      scrollPane.add(editorPanes[editorPanes.length - 1]);
-      return scrollPane;
-    }catch(IOException ioex){
-      System.err.println("Could not open file: " + fileUrl.toString());
-      JOptionPane.showMessageDialog(null, "File :" + fileUrl.toString() + " could not open, please see if you have the right premissions...", "Error!", JOptionPane.ERROR_MESSAGE);
-      //Otherwise
-      return null;
-    }
+  private ScrollPane editPaneWithScrollBars(String data){
+    ScrollPane scrollPane = new ScrollPane();
+    ArrayHelper.addEditorPaneToOther(editorPanes, new JEditorPane());
+    editorPanes[editorPanes.length - 1].setText(data);
+    //If no error occurred
+    scrollPane.add(editorPanes[editorPanes.length - 1]);
+    return scrollPane;
   }
 
 
