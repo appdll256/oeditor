@@ -33,11 +33,7 @@ public class Writer extends Thread{
     }
   }
 
-  
-  
-  
-  
-  
+ 
   @Override
   public void run(){
     try{
@@ -65,9 +61,5 @@ public class Writer extends Thread{
       StackTraceHelper.writeCatchedExceptionStackTrace(ioex.getStackTrace());
     }
 
-
   }
-
-  
-
 }
