@@ -10,7 +10,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-public class Reader extends Thread{
+public class Reader{
   private File readTarget;
 
   private String[] lines;
@@ -22,19 +22,6 @@ public class Reader extends Thread{
 
   
   public String[] readFileLines(){
-    start();
-    return lines;
-  }
-
-  
-  public OpenFile readFile(){
-    return new OpenFile(readTarget, readFileLines());
-  }
-
-
-  
-  @Override
-  public void run(){
     try{
       BufferedReader reader = new BufferedReader(new FileReader(readTarget));
       StringBuilder builder = new StringBuilder();
@@ -45,10 +32,16 @@ public class Reader extends Thread{
       //Invalidate reader & buffer
       reader.close();
       buffer = null;
-      lines = builder.toString().split(".line.Seperator");
+      return lines = builder.toString().split(".line.Seperator");
     }catch(IOException ioex){
       StackTraceHelper.writeCatchedExceptionStackTrace(ioex.getStackTrace());
+      return new String[]{""};
     }
+  }
+
+  
+  public OpenFile readFile(){
+    return new OpenFile(readTarget, readFileLines());
   }
 
   
@@ -56,5 +49,4 @@ public class Reader extends Thread{
   interface ProgressListener{
     public void onProgress(int progress);
   }
-
 }
