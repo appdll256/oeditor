@@ -7,15 +7,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 
-
-
 import java.io.IOException;
 
 
 public class Reader extends Thread{
   private File readTarget;
-  
-  private String[] intrigents;
+
+  private String[] lines;
   
   
   public Reader(File file){
@@ -25,7 +23,7 @@ public class Reader extends Thread{
   
   public String[] readFileLines(){
     start();
-    return intrigents;
+    return lines;
   }
 
   
@@ -39,8 +37,15 @@ public class Reader extends Thread{
   public void run(){
     try{
       BufferedReader reader = new BufferedReader(new FileReader(readTarget));
-      intrigents = (String[]) reader.lines().toArray();
+      StringBuilder builder = new StringBuilder();
+      String buffer = "";
+      while ((buffer = reader.readLine()) != null) { 
+        builder.append(buffer + ".line.Seperator");
+      }
+      //Invalidate reader & buffer
       reader.close();
+      buffer = null;
+      lines = builder.toString().split(".line.Seperator");
     }catch(IOException ioex){
       StackTraceHelper.writeCatchedExceptionStackTrace(ioex.getStackTrace());
     }
