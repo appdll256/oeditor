@@ -24,6 +24,16 @@ class IOHandler{
     Reader reader = new Reader(file);
     return reader.readFileLines();
   }
+  
+  static String readFileLinesWithSeperators(File file){
+    String[] buffer = readFileLines(file);
+    StringBuilder builder = new StringBuilder();
+    for (String line : buffer) {
+      builder.append(line);
+      builder.append(System.lineSeparator());
+    }
+    return builder.toString();
+  }
 
   static void writeFile(OpenFile file){
     Writer writer = new Writer();
