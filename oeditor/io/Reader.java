@@ -10,10 +10,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-public class Reader{
+public class Reader extends Thread{
   private File readTarget;
 
   private String[] lines;
+  
+  private boolean isComplete;
   
   
   public Reader(File file){
@@ -22,6 +24,22 @@ public class Reader{
 
   
   public String[] readFileLines(){
+    run();
+    //Fast fix may change later
+    while (isComplete == false) {}
+    //Reject
+    isComplete = false;
+    return lines;
+  }
+
+  
+  public OpenFile readFile(){
+    return new OpenFile(readTarget, readFileLines());
+  }
+  
+  
+  @Override
+  public void run(){
     try{
       BufferedReader reader = new BufferedReader(new FileReader(readTarget));
       StringBuilder builder = new StringBuilder();
@@ -32,17 +50,14 @@ public class Reader{
       //Invalidate reader & buffer
       reader.close();
       buffer = null;
-      return lines = builder.toString().split(".line.Seperator");
+      lines = builder.toString().split(".line.Seperator");
     }catch(IOException ioex){
       StackTraceHelper.writeCatchedExceptionStackTrace(ioex.getStackTrace());
-      return new String[]{""};
+      lines = new String[]{""};
     }
+    isComplete = true;
   }
 
-  
-  public OpenFile readFile(){
-    return new OpenFile(readTarget, readFileLines());
-  }
 
   
   //Note: This do nothing yet but should do in some time
