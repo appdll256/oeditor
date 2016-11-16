@@ -15,6 +15,8 @@ public class Reader extends Thread{
 
   private String[] lines;
   
+  private boolean isComplete;
+  
   
   public Reader(File file){
     readTarget = file;
@@ -22,7 +24,11 @@ public class Reader extends Thread{
 
   
   public String[] readFileLines(){
-    start();
+    run();
+    //Fast fix may change later
+    while (isComplete == false) {}
+    //Reject
+    isComplete = false;
     return lines;
   }
 
@@ -30,8 +36,7 @@ public class Reader extends Thread{
   public OpenFile readFile(){
     return new OpenFile(readTarget, readFileLines());
   }
-
-
+  
   
   @Override
   public void run(){
@@ -48,13 +53,15 @@ public class Reader extends Thread{
       lines = builder.toString().split(".line.Seperator");
     }catch(IOException ioex){
       StackTraceHelper.writeCatchedExceptionStackTrace(ioex.getStackTrace());
+      lines = new String[]{""};
     }
+    isComplete = true;
   }
+
 
   
   //Note: This do nothing yet but should do in some time
   interface ProgressListener{
     public void onProgress(int progress);
   }
-
 }
